@@ -673,7 +673,9 @@ func UpdateUniverse(jirix *jiri.X, gc bool, localManifest bool, rebaseTracked bo
 // WriteUpdateHistorySnapshot creates a snapshot of the current state of all
 // projects and writes it to the update history directory.
 func WriteUpdateHistorySnapshot(jirix *jiri.X, snapshotPath string, hooks Hooks, localManifest bool) error {
-	snapshotFile := filepath.Join(jirix.UpdateHistoryDir(), time.Now().Format(time.RFC3339))
+	timeStamp := time.Now().Format(time.RFC3339)
+	timeStamp = strings.Replace(timeStamp, ":", ".", -1)
+	snapshotFile := filepath.Join(jirix.UpdateHistoryDir(), timeStamp)
 	if err := CreateSnapshot(jirix, snapshotFile, hooks, localManifest); err != nil {
 		return err
 	}
