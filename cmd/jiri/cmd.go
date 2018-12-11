@@ -8,30 +8,13 @@
 package main
 
 import (
-	"fmt"
 	"runtime"
-	"syscall"
-
 	"fuchsia.googlesource.com/jiri/cmdline"
 )
 
 func init() {
 	runtime.GOMAXPROCS(runtime.NumCPU())
-	if runtime.GOOS == "darwin" {
-		var rLimit syscall.Rlimit
-		err := syscall.Getrlimit(syscall.RLIMIT_NOFILE, &rLimit)
-		if err != nil {
-			fmt.Println("Unable to obtain rlimit: ", err)
-		}
-		if rLimit.Cur < rLimit.Max {
-			rLimit.Max = 999999
-			rLimit.Cur = 999999
-			err = syscall.Setrlimit(syscall.RLIMIT_NOFILE, &rLimit)
-			if err != nil {
-				fmt.Println("Unable to increase rlimit: ", err)
-			}
-		}
-	}
+    // darwin rlimit manipulation moved to conditional compilation
 	cmdRoot = newCmdRoot()
 }
 
