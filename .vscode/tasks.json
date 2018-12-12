@@ -11,6 +11,9 @@
                 // Ask msbuild to generate full paths for file names.
                 "install",
                 "-v",
+                "-ldflags",
+                "-X \"fuchsia.googlesource.com/jiri/version.GitCommit=xxx\" -X \"fuchsia.googlesource.com/jiri/version.BuildTime=xxx\"",
+                "-a",
                 "fuchsia.googlesource.com/jiri/cmd/jiri"
             ],
             "group": {
