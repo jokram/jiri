@@ -19,6 +19,8 @@ func Rename(src, dst string) error {
 		if !ok || errno != syscall.EXDEV {
 			return err
 		}
+		// TODO: Check if the code below is reached on Windows
+		// if Temp directory is on another drive than the working directory for JIRI
 		// Fall back to a non-atomic rename.
 		cmd := exec.Command("mv", src, dst)
 		return cmd.Run()

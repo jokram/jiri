@@ -515,6 +515,7 @@ func LocalProjects(jirix *jiri.X, scanMode ScanMode) (Projects, error) {
 	jirix.TimerPush("local projects")
 	defer jirix.TimerPop()
 
+	// TODO: Change symbolic links to a Git style of links (like the branch pointers, just text files)
 	latestSnapshot := jirix.UpdateHistoryLatestLink()
 	latestSnapshotExists, err := isFile(latestSnapshot)
 	if err != nil {
@@ -673,6 +674,7 @@ func UpdateUniverse(jirix *jiri.X, gc bool, localManifest bool, rebaseTracked bo
 // WriteUpdateHistorySnapshot creates a snapshot of the current state of all
 // projects and writes it to the update history directory.
 func WriteUpdateHistorySnapshot(jirix *jiri.X, snapshotPath string, hooks Hooks, localManifest bool) error {
+	// Fix for Windows: colon (":") is not allowed in file names => use dots (".") instead
 	timeStamp := time.Now().Format(time.RFC3339)
 	timeStamp = strings.Replace(timeStamp, ":", ".", -1)
 	snapshotFile := filepath.Join(jirix.UpdateHistoryDir(), timeStamp)
