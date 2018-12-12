@@ -20,6 +20,8 @@ import (
 	"sync"
 	"time"
 
+	"fuchsia.googlesource.com/jiri/osutil"
+
 	"fuchsia.googlesource.com/jiri"
 	"fuchsia.googlesource.com/jiri/gitutil"
 	"fuchsia.googlesource.com/jiri/log"
@@ -515,7 +517,6 @@ func LocalProjects(jirix *jiri.X, scanMode ScanMode) (Projects, error) {
 	jirix.TimerPush("local projects")
 	defer jirix.TimerPop()
 
-	// TODO: Change symbolic links to a Git style of links (like the branch pointers, just text files)
 	latestSnapshot := jirix.UpdateHistoryLatestLink()
 	latestSnapshotExists, err := isFile(latestSnapshot)
 	if err != nil {
@@ -690,14 +691,14 @@ func WriteUpdateHistorySnapshot(jirix *jiri.X, snapshotPath string, hooks Hooks,
 		return err
 	}
 	if latestLinkExists {
-		latestFile, err := os.Readlink(latestLink)
+		latestFile, err := osutil.ReadSimLink(latestLink)
 		if err != nil {
 			return fmtError(err)
 		}
 		if err := os.RemoveAll(secondLatestLink); err != nil {
 			return fmtError(err)
 		}
-		if err := os.Symlink(latestFile, secondLatestLink); err != nil {
+		if err := osutil.CreateSimLink(latestFile, secondLatestLink); err != nil {
 			return fmtError(err)
 		}
 	}
@@ -711,7 +712,7 @@ func WriteUpdateHistorySnapshot(jirix *jiri.X, snapshotPath string, hooks Hooks,
 	if err := os.RemoveAll(latestLink); err != nil {
 		return fmtError(err)
 	}
-	return fmtError(os.Symlink(snapshotFile, latestLink))
+	return fmtError(osutil.CreateSimLink(snapshotFile, latestLink))
 }
 
 // CleanupProjects restores the given jiri projects back to their detached
