@@ -522,10 +522,6 @@ func LocalProjects(jirix *jiri.X, scanMode ScanMode) (Projects, error) {
 	if err != nil {
 		return nil, err
 	}
-	latestSnapshotFile, err := osutil.ReadSimLink(latestSnapshot)
-	if err != nil {
-		return nil, err
-	}
 	if scanMode == FastScan && latestSnapshotExists {
 		// Fast path: Full scan was not requested, and we have a snapshot containing
 		// the latest update.  Check that the projects listed in the snapshot exist
@@ -534,6 +530,10 @@ func LocalProjects(jirix *jiri.X, scanMode ScanMode) (Projects, error) {
 		// An error will be returned if the snapshot contains remote imports, since
 		// that would cause an infinite loop; we'd need local projects, in order to
 		// load the snapshot, in order to determine the local projects.
+		latestSnapshotFile, err := osutil.ReadSimLink(latestSnapshot)
+		if err != nil {
+			return nil, err
+		}
 		snapshotProjects, _, err := LoadSnapshotFile(jirix, latestSnapshotFile)
 		if err != nil {
 			if err == errVersionMismatch {

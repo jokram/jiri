@@ -12,7 +12,7 @@
                 "install",
                 "-v",
                 "-ldflags",
-                "-X \"fuchsia.googlesource.com/jiri/version.GitCommit=xxx\" -X \"fuchsia.googlesource.com/jiri/version.BuildTime=xxx\"",
+                "-X \"fuchsia.googlesource.com/jiri/version.GitCommit=${env:GIT_COMMIT_ID}\" -X \"fuchsia.googlesource.com/jiri/version.BuildTime=${env:GIT_COMMIT_ID}\"",
                 "-a",
                 "fuchsia.googlesource.com/jiri/cmd/jiri"
             ],
@@ -25,7 +25,16 @@
                 "reveal": "always"
             },
             // Use the standard MS compiler pattern to detect errors, warnings and infos
-            "problemMatcher": "$go"
-        }
+            "problemMatcher": "$go",
+            "dependsOn": "build data",
+        },
+        {
+            "label": "build data",
+            "type": "shell",
+            "command": "./.vscode/build_data.sh",
+            "windows": {
+                "command": ".\\.vscode\\build_data.bat"
+            },            
+        },
     ]
 }
