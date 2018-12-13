@@ -18,6 +18,8 @@ import (
 	"strings"
 	"testing"
 
+	"fuchsia.googlesource.com/jiri/osutil"
+
 	"fuchsia.googlesource.com/jiri"
 	"fuchsia.googlesource.com/jiri/gitutil"
 	"fuchsia.googlesource.com/jiri/jiritest"
@@ -200,8 +202,13 @@ func TestLocalProjects(t *testing.T) {
 	if err := os.MkdirAll(jirix.UpdateHistoryDir(), 0755); err != nil {
 		t.Fatalf("MkdirAll(%v) failed: %v", jirix.UpdateHistoryDir(), err)
 	}
-	if err := manifest.ToFile(jirix, jirix.UpdateHistoryLatestLink()); err != nil {
-		t.Fatalf("manifest.ToFile(%v) failed: %v", jirix.UpdateHistoryLatestLink(), err)
+	latestSnapshot := jirix.UpdateHistoryLatestLink()
+	latestSnapshotFile, err := osutil.ReadSimLink(latestSnapshot)
+	if err != nil {
+		t.Fatalf("osutil.ReadSimLink(%v) failed: %v", latestSnapshot, err)
+	}
+	if err := manifest.ToFile(jirix, latestSnapshotFile); err != nil {
+		t.Fatalf("manifest.ToFile(%v) failed: %v", latestSnapshotFile, err)
 	}
 
 	// LocalProjects with scanMode = FastScan should only find the first
