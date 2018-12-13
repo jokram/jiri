@@ -6,16 +6,10 @@
         {
             "label": "build",
             "type": "shell",
-            "command": "go",
-            "args": [
-                // Ask msbuild to generate full paths for file names.
-                "install",
-                "-v",
-                "-ldflags",
-                "-X \"fuchsia.googlesource.com/jiri/version.GitCommit=xxx\" -X \"fuchsia.googlesource.com/jiri/version.BuildTime=xxx\"",
-                "-a",
-                "fuchsia.googlesource.com/jiri/cmd/jiri"
-            ],
+            "command": "./.vscode/build.sh",
+            "windows": {
+                "command": ".\\.vscode\\build.bat"
+            },
             "group": {
                 "kind": "build",
                 "isDefault": true
@@ -25,7 +19,7 @@
                 "reveal": "always"
             },
             // Use the standard MS compiler pattern to detect errors, warnings and infos
-            "problemMatcher": "$go"
+            "problemMatcher": "$go",
         }
     ]
 }
